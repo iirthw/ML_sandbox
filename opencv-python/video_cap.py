@@ -5,10 +5,22 @@ capture = cv2.VideoCapture(0)
 
 while True:
     ret, frame = capture.read()
+    width = int(capture.get(3))
+    height = int(capture.get(4))
 
-    #image = np.zeros()
+    image = np.zeros(frame.shape, np.uint8)
+    shrunk_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
-    cv2.imshow('frame', frame)
+    # upper-left
+    image[:height//2, :width//2] = shrunk_frame
+    # lower-left 
+    image[height//2:, :width//2] = shrunk_frame
+    # upper-right
+    image[:height//2, width//2:] = shrunk_frame
+    # lower-right
+    image[height//2:, width//2:] = shrunk_frame
+
+    cv2.imshow('frame', image)
 
     if cv2.waitKey(1) == ord('q'):
         break
