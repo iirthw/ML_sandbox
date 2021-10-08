@@ -14,6 +14,10 @@ for i in range(offset, 200):
         img[i][j] = [random.randint(1, 255), random.randint(1, 255), 
             random.randint(1, 255)]
 
+# copy sub-image pixels
+tag = img[50:200, 50:200]
+img[250:400, 250:400] = tag
+
 cv2.imshow('lennaImage', img)
 
 print(type(img))
