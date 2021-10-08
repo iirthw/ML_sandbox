@@ -12,11 +12,11 @@ while True:
     shrunk_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
     # upper-left
-    image[:height//2, :width//2] = shrunk_frame
+    image[:height//2, :width//2] = cv2.rotate(shrunk_frame, cv2.cv2.ROTATE_180)
     # lower-left 
     image[height//2:, :width//2] = shrunk_frame
     # upper-right
-    image[:height//2, width//2:] = shrunk_frame
+    image[:height//2, width//2:] = cv2.rotate(shrunk_frame, cv2.cv2.ROTATE_180)
     # lower-right
     image[height//2:, width//2:] = shrunk_frame
 
