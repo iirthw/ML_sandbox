@@ -25,10 +25,17 @@ while True:
     # lower-right
     image[height//2:, width//2:] = shrunk_frame
 
-    # draw diagonal lime
-    thicknessMedium = 10
-    blueColor = (255, 0, 0)
+    # draw a diagonal lime
+    thicknessMedium = 5
+    blueColor = (255, 0, 0) # bgr
     cv2.line(image, (0, 0), (width, height), blueColor, thicknessMedium)
+
+    # draw a rectangle
+    thicknessLight = 2
+    greenColor = (0, 255, 0)
+    p0 = (0, 0)
+    p1 = (width // 2, height // 2)
+    cv2.rectangle(image, p0, p1, greenColor, thicknessLight)
 
     cv2.imshow('frame', image)
 
