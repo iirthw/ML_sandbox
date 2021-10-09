@@ -42,7 +42,8 @@ while True:
     origin = (width//4, height//2 - 50)
     cv2.putText(image, "Test", 
         org=origin, fontFace=cv2.FONT_HERSHEY_SIMPLEX, 
-        fontScale=1, color=fontColor)
+        fontScale=1, color=fontColor, lineType=cv2.LINE_AA,
+        thickness=2)
 
     cv2.imshow('frame', image)
 
