@@ -20,6 +20,11 @@ while True:
     # lower-right
     image[height//2:, width//2:] = shrunk_frame
 
+    # draw diagonal lime
+    thicknessMedium = 10
+    blueColor = (255, 0, 0)
+    cv2.line(image, (0, 0), (width, height), blueColor, thicknessMedium)
+
     cv2.imshow('frame', image)
 
     if cv2.waitKey(1) == ord('q'):
