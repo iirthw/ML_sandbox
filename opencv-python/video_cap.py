@@ -37,6 +37,13 @@ while True:
     p1 = (width // 2, height // 2)
     cv2.rectangle(image, p0, p1, greenColor, thicknessLight)
 
+    # display text
+    fontColor = (0, 10, 255)
+    origin = (width//4, height//2 - 50)
+    cv2.putText(image, "Test", 
+        org=origin, fontFace=cv2.FONT_HERSHEY_SIMPLEX, 
+        fontScale=1, color=fontColor)
+
     cv2.imshow('frame', image)
 
     if cv2.waitKey(1) == ord('q'):
