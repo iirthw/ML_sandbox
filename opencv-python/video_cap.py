@@ -27,15 +27,20 @@ while True:
     # upper-left
     # show HSV image
     image[:height//2, :width//2] = cv2.rotate(hsv_shrunk_frame, cv2.cv2.ROTATE_180)
+
     # lower-left 
     # show camera frame
     image[height//2:, :width//2] = blue_shrunk_frame
+
     # upper-right
     # show color threshold mask
     maskImage = np.zeros((mask.shape[0], mask.shape[1], 3))
     maskImage[:, :, 0] = mask
+    maskImage[:, :, 1] = mask
+    maskImage[:, :, 2] = mask
     
-    image[:height//2, width//2:] = cv2.rotate(mask, cv2.cv2.ROTATE_180)
+    image[:height//2, width//2:] = cv2.rotate(maskImage, cv2.cv2.ROTATE_180)
+
     # lower-right
     image[height//2:, width//2:] = shrunk_frame
 
