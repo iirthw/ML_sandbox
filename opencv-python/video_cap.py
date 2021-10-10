@@ -16,12 +16,26 @@ while True:
     image = np.zeros(frame.shape, np.uint8)
     shrunk_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
+    # convert image to HSV
+    hsv_shrunk_frame = cv2.cvtColor(shrunk_frame, cv2.COLOR_BGR2HSV)
+    lower_blue = np.array([110, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+
+    mask = cv2.inRange(hsv_shrunk_frame, lower_blue, upper_blue)
+    blue_shrunk_frame = cv2.bitwise_and(shrunk_frame, shrunk_frame, mask=mask)
+
     # upper-left
-    image[:height//2, :width//2] = cv2.rotate(shrunk_frame, cv2.cv2.ROTATE_180)
+    # show HSV image
+    image[:height//2, :width//2] = cv2.rotate(hsv_shrunk_frame, cv2.cv2.ROTATE_180)
     # lower-left 
-    image[height//2:, :width//2] = shrunk_frame
+    # show camera frame
+    image[height//2:, :width//2] = blue_shrunk_frame
     # upper-right
-    image[:height//2, width//2:] = cv2.rotate(shrunk_frame, cv2.cv2.ROTATE_180)
+    # show color threshold mask
+    maskImage = np.zeros((mask.shape[0], mask.shape[1], 3))
+    maskImage[:, :, 0] = mask
+    
+    image[:height//2, width//2:] = cv2.rotate(mask, cv2.cv2.ROTATE_180)
     # lower-right
     image[height//2:, width//2:] = shrunk_frame
 
@@ -50,5 +64,5 @@ while True:
     if cv2.waitKey(1) == ord('q'):
         break
 
-capture.realse()
+capture.release()
 cv2.destroyAllWindows()
