@@ -45,9 +45,9 @@ while True:
     image[height//2:, width//2:] = shrunk_frame
 
     # draw a diagonal lime
-    thicknessMedium = 5
-    blueColor = (255, 0, 0) # bgr
-    cv2.line(image, (0, 0), (width, height), blueColor, thicknessMedium)
+    # thicknessMedium = 5
+    # blueColor = (255, 0, 0) # bgr
+    # cv2.line(image, (0, 0), (width, height), blueColor, thicknessMedium)
 
     # draw a rectangle
     thicknessLight = 2
