@@ -6,7 +6,7 @@
 ## Satelite Imagery Data Sets
 * https://github.com/chrieke/awesome-satellite-imagery-datasets
 
-## Varjios Notes
+## Various Notes
 
 In order to run Jupyter notebook in a custom directory:
 - Start Anaconda Prompt
