@@ -1,10 +1,12 @@
 # Aggregation of sandbox toy projects
 
 # Github repos
-# Satelite Image Deep Learning
+## Satelite Image Deep Learning
 * https://github.com/robmarkcole/satellite-image-deep-learning#datasets
-# Satelite Imagery Data Sets
+## Satelite Imagery Data Sets
 * https://github.com/chrieke/awesome-satellite-imagery-datasets
+
+## Varjios Notes
 
 In order to run Jupyter notebook in a custom directory:
 - Start Anaconda Prompt
