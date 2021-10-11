@@ -1,4 +1,6 @@
-**Install**
+# OpenCV with python sample tests
+
+## Install
 
 0. Intall OpenCV packages for Python (CPU only). You must have `pip` installed.
    For main modules package:
