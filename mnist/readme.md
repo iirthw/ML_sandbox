@@ -1,5 +1,9 @@
 # Readme
 
+# Example of LeNet architecture for the MNIST problem
+
+https://colab.research.google.com/drive/1CVm50PGE4vhtB5I_a_yc4h5F-itKOVL9#scrollTo=FdhXdD3HU3CV
+
 # On Converting Keras Saved Model to TensorFlow.js
 
 Preliminaries:
