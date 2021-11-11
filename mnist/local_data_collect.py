@@ -20,6 +20,11 @@ class DataCollect:
         self.image_twin = None
         self.draw_twin = None
 
+        # The twin image will be downscaled according to downscale_width and
+        # downscale_height before adding that data to the pool for pickling.
+        self.downscale_width = 28
+        self.downscale_height = 28
+
     def get_xy(self, event):
         self.last_x, self.last_y = event.x, event.y
 
@@ -54,7 +59,7 @@ class DataCollect:
         pixels = list(self.image_twin.getdata())
 
         im = self.image_twin
-        im.thumbnail((28, 28), Image.ANTIALIAS)
+        im.thumbnail((self.downscale_width, self.downscale_height), Image.ANTIALIAS)
         plt.imshow(im)
         plt.show()
 
