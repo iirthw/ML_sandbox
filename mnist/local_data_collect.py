@@ -5,8 +5,8 @@ from PIL import Image, ImageDraw
 
 class DataCollect:
 
-    def __init__(self, stroke_width, canvas_width, canvas_height):
-        self.stroke_width = stroke_width
+    def __init__(self, stroke_size, canvas_width, canvas_height):
+        self.stroke_size = stroke_size
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
 
@@ -25,6 +25,9 @@ class DataCollect:
         self.downscale_width = 28
         self.downscale_height = 28
 
+        # constant used for on-demand increment and decrement of the stroke width.
+        self.stroke_increment = 5
+
         self.black = (0, 0, 0)
 
     def get_xy(self, event):
@@ -32,12 +35,12 @@ class DataCollect:
 
     def draw_stroke(self, event):
         top_left_point = (
-            self.last_x - self.stroke_width,
-            self.last_y - self.stroke_width
+            self.last_x - self.stroke_size,
+            self.last_y - self.stroke_size
             )
         bottom_right_point = (
-            self.last_x + self.stroke_width, 
-            self.last_y + self.stroke_width
+            self.last_x + self.stroke_size, 
+            self.last_y + self.stroke_size
             )
 
         # Draw on the canvas
@@ -77,6 +80,14 @@ class DataCollect:
     def quit(self, event):
         self.app.quit()
 
+    def decrement_stroke_size(self, event):
+        print('decrement stroke size')
+        self.stroke_size -= self.stroke_increment
+
+    def increment_stroke_size(self, event):
+        print('increment stroke size')
+        self.stroke_size += self.stroke_increment
+
     def run(self):        
         self.image_twin = Image.new('RGB', 
             (self.canvas_width, self.canvas_height), self.black)
@@ -98,8 +109,13 @@ class DataCollect:
         self.app.bind('<space>', self.clear_canvas)
         self.app.bind('<q>', self.quit)
         self.app.bind('<Escape>', self.quit)
+        self.app.bind('-', self.decrement_stroke_size)
+        # Be careful with your keyboard layout to make sure you actually press
+        # '+' key, rather than '=' for example, which both might share the 
+        # same physical key on the keyboard.
+        self.app.bind('+', self.increment_stroke_size)
 
         self.app.mainloop()
  
-dc = DataCollect(stroke_width=16, canvas_width=200, canvas_height=200)
+dc = DataCollect(stroke_size=16, canvas_width=200, canvas_height=200)
 dc.run()
