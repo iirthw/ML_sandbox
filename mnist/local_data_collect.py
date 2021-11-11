@@ -71,7 +71,7 @@ class DataCollect:
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         self.app = Tk()
-        self.app.geometry('200x200')
+        self.app.geometry(str(self.canvas_width) + 'x' + str(self.canvas_height))
 
         self.canvas = Canvas(self.app, bg='black')
         self.canvas.pack(anchor='nw', fill='both', expand=1)        
