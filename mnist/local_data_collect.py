@@ -2,43 +2,13 @@ from tkinter import *
 
 from PIL import Image, ImageDraw
 
-from colorutils import Color
-
-
-# class ImageUtils:
-
-#     @staticmethod
-#     def get_pixels_of(canvas):
-#         width = int(canvas["width"])
-#         height = int(canvas["height"])
-#         colors = []
-
-#         for x in range(width):
-#             column = []
-#             for y in range(height):
-#                 column.append(ImageUtils.get_pixel_color(canvas, x, y))
-#             colors.append(column)
-
-#         return colors
-
-#     @staticmethod
-#     def get_pixel_color(canvas, x, y):
-#         ids = canvas.find_overlapping(x, y, x, y)
-
-#         if len(ids) > 0:
-#             index = ids[-1]
-#             color = canvas.itemcget(index, "fill")
-#             color = color.upper()
-#             if color != '':
-#                 print(color)
-#                 return Color(color.upper())
-
-#         return "lol"
-
 class DataCollect:
 
-    def __init__(self, stroke_width):
+    def __init__(self, stroke_width, canvas_width, canvas_height):
         self.stroke_width = stroke_width
+        self.canvas_width = canvas_width
+        self.canvas_height = canvas_height
+
         self.last_x = 0
         self.last_y = 0
         self.canvas = None
@@ -81,20 +51,15 @@ class DataCollect:
         print(pixel00)
 
     def run(self):
-        width = 100
-        height = 100
         black = (0, 0, 0)
-        self.image_twin = Image.new('RGB', (width, height), black)
+        self.image_twin = Image.new('RGB', (self.canvas_width, self.canvas_height), black)
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         app = Tk()
         app.geometry("200x200")
 
         self.canvas = Canvas(app, bg='black')
-        self.canvas.pack(anchor='nw', fill='both', expand=1)
-
-        # img = ImageTk.PhotoImage(Image.open('black_tile.png'))
-        # self.canvas.create_image(25,25, image=img, anchor=CENTER, tag = "lol")
+        self.canvas.pack(anchor='nw', fill='both', expand=1)        
 
         self.canvas.bind("<Button-1>", self.get_xy)
         # Button-3 corresponds to the right mouse button,
@@ -105,5 +70,5 @@ class DataCollect:
 
         app.mainloop()
  
-dc = DataCollect(stroke_width=16)
+dc = DataCollect(stroke_width=16, canvas_width=100, canvas_height=100)
 dc.run()
