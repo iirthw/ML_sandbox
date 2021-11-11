@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from tkinter import *
 from PIL import Image, ImageDraw
 
@@ -51,7 +52,11 @@ class DataCollect:
         # pixel00 = self.image_twin.getpixel((0, 0))
         
         pixels = list(self.image_twin.getdata())
-        print(pixels)
+
+        im = self.image_twin
+        im.thumbnail((28, 28), Image.ANTIALIAS)
+        plt.imshow(im)
+        plt.show()
 
     def clear_canvas(self, event):
         print('clear_canvas')
@@ -84,5 +89,5 @@ class DataCollect:
 
         self.app.mainloop()
  
-dc = DataCollect(stroke_width=16, canvas_width=100, canvas_height=100)
+dc = DataCollect(stroke_width=16, canvas_width=200, canvas_height=200)
 dc.run()
