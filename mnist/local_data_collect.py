@@ -50,23 +50,28 @@ class DataCollect:
         pixel00 = self.image_twin.getpixel((0, 0))
         print(pixel00)
 
+    def clear_canvas(self, event):
+        print('clear_canvas')
+        self.canvas.delete('all')
+
     def run(self):
         black = (0, 0, 0)
         self.image_twin = Image.new('RGB', (self.canvas_width, self.canvas_height), black)
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         app = Tk()
-        app.geometry("200x200")
+        app.geometry('200x200')
 
         self.canvas = Canvas(app, bg='black')
         self.canvas.pack(anchor='nw', fill='both', expand=1)        
 
-        self.canvas.bind("<Button-1>", self.get_xy)
+        self.canvas.bind('<Button-1>', self.get_xy)
         # Button-3 corresponds to the right mouse button,
         # while Button-2 corresponds to the middle button if available,
         # that might be confusing if not reading the docs of tkinter.
-        self.canvas.bind("<Button-3>", self.on_mouse_right_button)
-        self.canvas.bind("<B1-Motion>", self.draw_stroke)
+        self.canvas.bind('<Button-3>', self.on_mouse_right_button)
+        self.canvas.bind('<B1-Motion>', self.draw_stroke)
+        app.bind('<space>', self.clear_canvas)
 
         app.mainloop()
  
