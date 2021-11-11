@@ -25,6 +25,8 @@ class DataCollect:
         self.downscale_width = 28
         self.downscale_height = 28
 
+        self.black = (0, 0, 0)
+
     def get_xy(self, event):
         self.last_x, self.last_y = event.x, event.y
 
@@ -65,14 +67,19 @@ class DataCollect:
 
     def clear_canvas(self, event):
         print('clear_canvas')
+        # Clear Tk canvas
         self.canvas.delete('all')
+        # Clear Pillow image as well 
+        self.image_twin = Image.new('RGB', 
+            (self.canvas_width, self.canvas_height), self.black)
+        self.draw_twin = ImageDraw.Draw(self.image_twin)
 
     def quit(self, event):
         self.app.quit()
 
-    def run(self):
-        black = (0, 0, 0)
-        self.image_twin = Image.new('RGB', (self.canvas_width, self.canvas_height), black)
+    def run(self):        
+        self.image_twin = Image.new('RGB', 
+            (self.canvas_width, self.canvas_height), self.black)
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         self.app = Tk()
