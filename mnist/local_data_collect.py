@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from tkinter import *
@@ -29,6 +30,9 @@ class DataCollect:
         self.stroke_increment = 5
         self.stroke_min_size = 1
         self.stroke_max_size = max(self.canvas_width, self.canvas_height)
+
+        # Current digit which is in use for the data collection
+        self.curr_digit = 0
 
         self.black = (0, 0, 0)
 
@@ -100,6 +104,17 @@ class DataCollect:
         
         print('increment stroke size: ' + str(self.stroke_size))
 
+    def key_pressed(self, event):
+        # Currently do not use match/case syntax (Python >= 3.10)
+        # for the compatibility with Python <= 3.9
+        cases = {'0' : 0, '1' : 1, '2' : 2, '3' : 3, '4' : 4, '5' : 5, '6' : 6,
+            '7' : 7, '8' : 8, '9' : 9}
+
+        curr_digit = cases.get(event.keysym, -1)
+        if curr_digit >= 0 and curr_digit <= 9:
+            self.curr_digit = curr_digit
+            print('Set current digit to : ' + str(self.curr_digit))
+
     def run(self):        
         self.image_twin = Image.new('RGB', 
             (self.canvas_width, self.canvas_height), self.black)
@@ -126,6 +141,8 @@ class DataCollect:
         # '+' key, rather than '=' for example, which both might share the 
         # same physical key on the keyboard.
         self.app.bind('+', self.increment_stroke_size)
+
+        self.app.bind('<Key>', self.key_pressed)
 
         self.app.mainloop()
  
