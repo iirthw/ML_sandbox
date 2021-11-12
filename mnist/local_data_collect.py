@@ -1,4 +1,4 @@
-import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from tkinter import *
@@ -33,6 +33,11 @@ class DataCollect:
 
         # Current digit which is in use for the data collection
         self.curr_digit = 0
+
+        # Data file: pickle data to that file
+        self.data_file_name = 'data.pkl'
+        # Actual data
+        self.data = np.zeros((1, self.downscale_width, self.downscale_height))
 
         self.black = (0, 0, 0)
 
@@ -73,6 +78,9 @@ class DataCollect:
         im.thumbnail((self.downscale_width, self.downscale_height), Image.ANTIALIAS)
         plt.imshow(im)
         plt.show()
+
+        pix = np.array(im.getdata()).reshape(im.size[0], im.size[1], 1)
+        print(pix.shape)
 
     def clear_canvas(self, event):
         print('clear_canvas')
@@ -115,6 +123,18 @@ class DataCollect:
             self.curr_digit = curr_digit
             print('Set current digit to : ' + str(self.curr_digit))
 
+    def append_data(self, event):
+        print('lollol')
+
+    def save_data(self, event):
+        if os.path.isfile(self.data_file_name):
+            print('lol')
+        else:
+            print('anti-lol')
+            print(self.data.shape)
+
+        # with file(self.data_file_name, 'wb') as data_file:
+
     def run(self):        
         self.image_twin = Image.new('RGB', 
             (self.canvas_width, self.canvas_height), self.black)
@@ -143,6 +163,7 @@ class DataCollect:
         self.app.bind('+', self.increment_stroke_size)
 
         self.app.bind('<Key>', self.key_pressed)
+        self.app.bind('<s>', self.save_data)
 
         self.app.mainloop()
  
