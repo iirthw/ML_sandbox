@@ -27,6 +27,8 @@ class DataCollect:
 
         # constant used for on-demand increment and decrement of the stroke width.
         self.stroke_increment = 5
+        self.stroke_min_size = 1
+        self.stroke_max_size = max(self.canvas_width, self.canvas_height)
 
         self.black = (0, 0, 0)
 
@@ -81,12 +83,22 @@ class DataCollect:
         self.app.quit()
 
     def decrement_stroke_size(self, event):
-        print('decrement stroke size')
-        self.stroke_size -= self.stroke_increment
+        temp = self.stroke_size - self.stroke_increment
+        if temp < self.stroke_min_size:
+            self.stroke_size = self.stroke_min_size
+        else:
+            self.stroke_size = temp
+        
+        print('decrement stroke size: ' + str(self.stroke_size))        
 
     def increment_stroke_size(self, event):
-        print('increment stroke size')
-        self.stroke_size += self.stroke_increment
+        temp = self.stroke_size + self.stroke_increment
+        if temp > self.stroke_max_size:
+            self.stroke_size = self.stroke_max_size
+        else:
+            self.stroke_size = temp
+        
+        print('increment stroke size: ' + str(self.stroke_size))
 
     def run(self):        
         self.image_twin = Image.new('RGB', 
