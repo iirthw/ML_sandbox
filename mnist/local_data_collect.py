@@ -1,8 +1,9 @@
 import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from tkinter import *
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 class DataCollect:
 
@@ -23,8 +24,8 @@ class DataCollect:
 
         # The twin image will be downscaled according to downscale_width and
         # downscale_height before adding that data to the pool for pickling.
-        self.downscale_width = 28
-        self.downscale_height = 28
+        self.downscale_width = 16
+        self.downscale_height = 16
 
         # constant used for on-demand increment and decrement of the stroke width.
         self.stroke_increment = 5
@@ -37,9 +38,9 @@ class DataCollect:
         # Data file: pickle data to that file
         self.data_file_name = 'data.pkl'
         # Actual data
-        self.data = np.zeros((1, self.downscale_width, self.downscale_height))
+        self.data = np.empty((1, self.downscale_width, self.downscale_height))
 
-        self.black = (0, 0, 0)
+        self.black = 0
 
     def get_xy(self, event):
         self.last_x, self.last_y = event.x, event.y
@@ -68,6 +69,20 @@ class DataCollect:
         # Draw on the image twin
         self.draw_twin.ellipse([top_left_point, bottom_right_point], fill='white')
 
+    def to_grayscale(self, image):
+        return ImageOps.grayscale(image)
+
+    def get_pixels(self):
+        img = self.image_twin
+        # img = self.to_grayscale(img)
+        # thumbnail method can be used to downscale the image
+        img.thumbnail((self.downscale_width, self.downscale_height), Image.ANTIALIAS)
+        pix = list(img.getdata())
+        pix = np.array(pix)
+        pix = np.reshape(pix, (1, self.downscale_width, self.downscale_height))
+        print(pix)
+        return pix
+
     def on_mouse_right_button(self, event):
         # In case if a single pixel is needed, use the following: 
         # pixel00 = self.image_twin.getpixel((0, 0))
@@ -76,19 +91,26 @@ class DataCollect:
 
         im = self.image_twin
         im.thumbnail((self.downscale_width, self.downscale_height), Image.ANTIALIAS)
-        plt.imshow(im)
-        plt.show()
+        # plt.imshow(im)
+        # plt.show()
 
-        pix = np.array(im.getdata()).reshape(im.size[0], im.size[1], 1)
-        print(pix.shape)
+        img_data = list(im.getdata())
+        img_data = np.array(img_data)
+        img_data = np.reshape(img_data, (self.downscale_width, self.downscale_height))
+        print(img_data)
+        # pix = np.array(1, img_data.getdata()).reshape(img_data.size[0], img_data.size[1], 1)
+        # return pix
+
+    def init_image_twin(self):
+        self.image_twin = self.image_twin = Image.new('L', 
+            (self.canvas_width, self.canvas_height), self.black)
 
     def clear_canvas(self, event):
         print('clear_canvas')
         # Clear Tk canvas
         self.canvas.delete('all')
         # Clear Pillow image as well 
-        self.image_twin = Image.new('RGB', 
-            (self.canvas_width, self.canvas_height), self.black)
+        self.init_image_twin()
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
     def quit(self, event):
@@ -122,9 +144,24 @@ class DataCollect:
         if curr_digit >= 0 and curr_digit <= 9:
             self.curr_digit = curr_digit
             print('Set current digit to : ' + str(self.curr_digit))
+    def sizeof_data(self, data):
+        num_bytes = sys.getsizeof(data)
+        if num_bytes < 1024:
+            return str(num_bytes) + ' Bytes'
+        else if num_bytes < 1024 * 1024:
+            return str(num_bytes / 1024) + ' KB'
+        else if num_bytes < 1024 * 1024 * 1024:
+            return str(num_bytes / (1024 * 1024)) + ' MB'
+        else:
+            return 'Over 1GB of memory used by data..'
 
     def append_data(self, event):
-        print('lollol')
+        pix = self.get_pixels()
+        pix[0] = self.curr_digit
+        print(self.data.shape)
+        self.data = np.append(self.data, pix, axis=0)
+        print(self.data.shape)
+        print(sys.getsizeof(self.data))
 
     def save_data(self, event):
         if os.path.isfile(self.data_file_name):
@@ -136,8 +173,7 @@ class DataCollect:
         # with file(self.data_file_name, 'wb') as data_file:
 
     def run(self):        
-        self.image_twin = Image.new('RGB', 
-            (self.canvas_width, self.canvas_height), self.black)
+        self.init_image_twin()
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         self.app = Tk()
@@ -163,6 +199,7 @@ class DataCollect:
         self.app.bind('+', self.increment_stroke_size)
 
         self.app.bind('<Key>', self.key_pressed)
+        self.app.bind('<a>', self.append_data)
         self.app.bind('<s>', self.save_data)
 
         self.app.mainloop()
