@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 from tkinter import *
 from PIL import Image, ImageDraw, ImageOps
@@ -38,7 +39,12 @@ class DataCollect:
         # Data file: pickle data to that file
         self.data_file_name = 'data.pkl'
         # Actual data
-        self.data = np.empty((1, self.downscale_width, self.downscale_height))
+        self.data = np.array([])
+
+        # Constants for data sizes
+        self.bytes_in_kb = 1024
+        self.bytes_in_mb = 1024 * self.bytes_in_kb
+        self.bytes_in_gb = 1024 * self.bytes_in_mb
 
         self.black = 0
 
@@ -144,24 +150,30 @@ class DataCollect:
         if curr_digit >= 0 and curr_digit <= 9:
             self.curr_digit = curr_digit
             print('Set current digit to : ' + str(self.curr_digit))
+
     def sizeof_data(self, data):
         num_bytes = sys.getsizeof(data)
-        if num_bytes < 1024:
+        if num_bytes < self.bytes_in_kb:
             return str(num_bytes) + ' Bytes'
-        else if num_bytes < 1024 * 1024:
-            return str(num_bytes / 1024) + ' KB'
-        else if num_bytes < 1024 * 1024 * 1024:
-            return str(num_bytes / (1024 * 1024)) + ' MB'
+        elif num_bytes < self.bytes_in_mb:
+            return str(math.floor(num_bytes / self.bytes_in_kb)) + ' KB'
+        elif num_bytes < self.bytes_in_gb:
+            return str(math.floor(num_bytes / self.bytes_in_mb)) + ' MB'
         else:
-            return 'Over 1GB of memory used by data..'
+            return 'Data in use: over 1 GB..'
 
     def append_data(self, event):
         pix = self.get_pixels()
         pix[0] = self.curr_digit
         print(self.data.shape)
-        self.data = np.append(self.data, pix, axis=0)
+
+        if self.data.size > 0:
+            self.data = np.append(self.data, pix, axis=0)
+        else:
+            self.data = pix
+
         print(self.data.shape)
-        print(sys.getsizeof(self.data))
+        print(self.sizeof_data(self.data))
 
     def save_data(self, event):
         if os.path.isfile(self.data_file_name):
