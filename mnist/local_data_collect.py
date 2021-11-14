@@ -1,3 +1,4 @@
+import cv2
 import os
 import sys
 import numpy as np
@@ -80,13 +81,16 @@ class DataCollect:
 
     def get_pixels(self):
         img = self.image_twin
-        # img = self.to_grayscale(img)
-        # thumbnail method can be used to downscale the image
-        img.thumbnail((self.downscale_width, self.downscale_height), Image.ANTIALIAS)
-        pix = list(img.getdata())
-        pix = np.array(pix)
-        pix = np.reshape(pix, (1, self.downscale_width, self.downscale_height))
-        print(pix)
+        image_vec = np.array(self.image_twin.getdata())
+        image_vec_copy = np.copy(image_vec)
+        image = np.reshape(image_vec_copy, (self.canvas_width, self.canvas_height)).astype('float32')
+
+        image_scaled = cv2.resize(image, (self.downscale_width, self.downscale_height))
+        image_scaled = image_scaled.astype('uint8')
+        print(image_scaled)
+        print(image_scaled.dtype)
+        pix = np.reshape(image_scaled, (1, self.downscale_width, self.downscale_height))
+
         return pix
 
     def on_mouse_right_button(self, event):
@@ -110,6 +114,8 @@ class DataCollect:
     def init_image_twin(self):
         self.image_twin = self.image_twin = Image.new('L', 
             (self.canvas_width, self.canvas_height), self.black)
+
+        self.draw_twin = ImageDraw.Draw(self.image_twin)
 
     def clear_canvas(self, event):
         print('clear_canvas')
@@ -179,14 +185,13 @@ class DataCollect:
         if os.path.isfile(self.data_file_name):
             print('lol')
         else:
-            print('anti-lol')
+            print('Saving to ' + str(self.data_file_name))
             print(self.data.shape)
 
         # with file(self.data_file_name, 'wb') as data_file:
 
     def run(self):        
         self.init_image_twin()
-        self.draw_twin = ImageDraw.Draw(self.image_twin)
 
         self.app = Tk()
         self.app.geometry(str(self.canvas_width) + 'x' + str(self.canvas_height))
