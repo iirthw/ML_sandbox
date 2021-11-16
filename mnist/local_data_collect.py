@@ -234,6 +234,13 @@ class DataCollect:
 
         print('---------------------------------------------------------------')
 
+    def info(self, event):
+        print('---------------------------------------------------------------')
+        print('data: ' + str(self.data.shape))
+        print('labels: ' + str(self.labels.shape))
+        print('curr_digit: ' + str(self.curr_digit))
+        print('---------------------------------------------------------------')
+
     def run(self):
         self.init_image_twin()
 
@@ -262,6 +269,7 @@ class DataCollect:
         self.app.bind('<Key>', self.key_pressed)
         self.app.bind('<a>', self.append_data)
         self.app.bind('<s>', self.save_data)
+        self.app.bind('<w>', self.info)
 
         self.app.mainloop()
  
