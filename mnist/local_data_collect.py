@@ -226,11 +226,15 @@ class DataCollect:
                     ' with current ' + str(self.labels.shape))
 
                 data_ = np.vstack((self.data, data_persistent[0]))
-                labels_ = np.vstack((self.labels, data_persistent[1]))        
+                labels_ = np.vstack((self.labels, data_persistent[1]))
+        else:
+            data_ = self.data
+            labels_ = self.labels
 
         data_chunk = [data_, labels_]
         with open(self.data_file_name, 'wb') as data_file:
             pickle.dump(data_chunk, data_file)
+
 
         print('Saved data ' + str(data_.shape) + ' with labels ' + 
             str(labels_.shape) + ' into ' + str(self.data_file_name))
