@@ -26,8 +26,8 @@ class DataCollect:
 
         # The twin image will be downscaled according to downscale_width and
         # downscale_height before adding that data to the pool for pickling.
-        self.downscale_width = 16
-        self.downscale_height = 16
+        self.downscale_width = 28
+        self.downscale_height = 28
 
         # constant used for on-demand increment and decrement of the stroke width.
         self.stroke_increment = 5
@@ -40,6 +40,7 @@ class DataCollect:
         # Data file: pickle data to that file
         self.data_file_name = 'data.pkl'
         # Actual data
+        self.data_labels = np.array([])
         self.data = np.array([])
 
         # Constants for data sizes
@@ -170,16 +171,19 @@ class DataCollect:
 
     def append_data(self, event):
         pix = self.get_pixels()
-        pix[0] = self.curr_digit
+        
         print(self.data.shape)
 
         if self.data.size > 0:
             self.data = np.append(self.data, pix, axis=0)
+            self.data_labels = np.append(self.data_labels, self.curr_digit)        
         else:
             self.data = pix
+            self.data_labels = self.curr_digit 
 
         print(self.data.shape)
         print(self.sizeof_data(self.data))
+        print(self.data_labels)
 
     def save_data(self, event):
         if os.path.isfile(self.data_file_name):
