@@ -148,6 +148,8 @@ class DataCollect:
         print('increment stroke size: ' + str(self.stroke_size))
 
     def key_pressed(self, event):
+        self.clear_canvas(event)
+
         # Currently do not use match/case syntax (Python >= 3.10)
         # for the compatibility with Python <= 3.9
         cases = {'0' : 0, '1' : 1, '2' : 2, '3' : 3, '4' : 4, '5' : 5, '6' : 6,
