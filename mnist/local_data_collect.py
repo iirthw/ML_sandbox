@@ -280,5 +280,5 @@ class DataCollect:
 
         self.app.mainloop()
  
-dc = DataCollect(stroke_size=16, canvas_width=200, canvas_height=200)
+dc = DataCollect(stroke_size=14, canvas_width=200, canvas_height=200)
 dc.run()
