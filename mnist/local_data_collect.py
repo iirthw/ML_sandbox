@@ -1,9 +1,12 @@
 import cv2
-import os
-import sys
-import numpy as np
 import math
 import matplotlib.pyplot as plt
+import numpy as np
+import pickle
+import os
+import sys
+
+
 from tkinter import *
 from PIL import Image, ImageDraw, ImageOps
 
@@ -40,7 +43,7 @@ class DataCollect:
         # Data file: pickle data to that file
         self.data_file_name = 'data.pkl'
         # Actual data
-        self.data_labels = np.array([])
+        self.labels = np.array([])
         self.data = np.array([])
 
         self.canvas_has_strokes = False
@@ -92,8 +95,6 @@ class DataCollect:
 
         image_scaled = cv2.resize(image, (self.downscale_width, self.downscale_height))
         image_scaled = image_scaled.astype('uint8')
-        print(image_scaled)
-        print(image_scaled.dtype)
         pix = np.reshape(image_scaled, (1, self.downscale_width, self.downscale_height))
 
         return pix
@@ -123,7 +124,9 @@ class DataCollect:
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
     def clear_canvas(self, event):
+        print('---------------------------------------------------------------')
         print('clear_canvas')
+        print('---------------------------------------------------------------')
 
         self.canvas_has_strokes = False
 
@@ -184,30 +187,54 @@ class DataCollect:
             return
 
         pix = self.get_pixels()
-        
-        print(self.data.shape)
 
         if self.data.size > 0:
             self.data = np.append(self.data, pix, axis=0)
-            self.data_labels = np.append(self.data_labels, self.curr_digit)        
+            self.labels = np.vstack((self.labels, self.curr_digit))
         else:
             self.data = pix
-            self.data_labels = self.curr_digit 
+            self.labels = np.array(self.curr_digit).reshape(1, -1)            
 
-        print(self.data.shape)
-        print(self.sizeof_data(self.data))
-        print(self.data_labels)
+        print('---------------------------------------------------------------')
+        print('Appended data: data shape - ' + str(self.data.shape))
+        print('Appended data: sizeof data - ' + self.sizeof_data(self.data))
+        print('Appended data: labels shape - ' + str(self.labels.shape))
+        print('---------------------------------------------------------------')
 
     def save_data(self, event):
+        if self.data.size == 0 or self.labels.size ==0:
+            return
+
+        print('---------------------------------------------------------------')
+
+        data_ = None
+        labels_ = None
         if os.path.isfile(self.data_file_name):
-            print('lol')
-        else:
-            print('Saving to ' + str(self.data_file_name))
-            print(self.data.shape)
+            data_persistent = None
+            with open(self.data_file_name, 'rb') as data_file:
+                data_persistent = pickle.load(data_file)
 
-        # with file(self.data_file_name, 'wb') as data_file:
+            # merge persistent data (which was already pickled) with the new
+            # chunk of data
+            if data_persistent is not None:
+                print('Merging persistent ' + str(data_persistent[0].shape) +
+                    ' with current ' + str(self.data.shape))
+                print('Merging persistent ' + str(data_persistent[1].shape) +
+                    ' with current ' + str(self.labels.shape))
 
-    def run(self):        
+                data_ = np.vstack((self.data, data_persistent[0]))
+                labels_ = np.vstack((self.labels, data_persistent[1]))        
+
+        data_chunk = [data_, labels_]
+        with open(self.data_file_name, 'wb') as data_file:
+            pickle.dump(data_chunk, data_file)
+
+        print('Saved data ' + str(data_.shape) + ' with labels ' + 
+            str(labels_.shape) + ' into ' + str(self.data_file_name))
+
+        print('---------------------------------------------------------------')
+
+    def run(self):
         self.init_image_twin()
 
         self.app = Tk()
