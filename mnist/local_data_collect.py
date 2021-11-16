@@ -261,7 +261,7 @@ class DataCollect:
         # Button-3 corresponds to the right mouse button,
         # while Button-2 corresponds to the middle button if available,
         # that might be confusing if not reading the docs of tkinter.
-        self.canvas.bind('<Button-3>', self.on_mouse_right_button)
+        # self.canvas.bind('<Button-3>', self.on_mouse_right_button)
         self.canvas.bind('<B1-Motion>', self.draw_stroke)
 
         self.app.bind('<space>', self.clear_canvas)
