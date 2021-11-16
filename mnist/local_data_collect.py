@@ -123,10 +123,11 @@ class DataCollect:
 
         self.draw_twin = ImageDraw.Draw(self.image_twin)
 
-    def clear_canvas(self, event):
-        print('---------------------------------------------------------------')
-        print('clear_canvas')
-        print('---------------------------------------------------------------')
+    def clear_canvas(self, event, verbose=True):
+        if verbose:
+            print('---------------------------------------------------------------')
+            print('clear_canvas')
+            print('---------------------------------------------------------------')
 
         self.canvas_has_strokes = False
 
@@ -200,6 +201,8 @@ class DataCollect:
         print('Appended data: sizeof data - ' + self.sizeof_data(self.data))
         print('Appended data: labels shape - ' + str(self.labels.shape))
         print('---------------------------------------------------------------')
+
+        self.clear_canvas(event, verbose=False)
 
     def save_data(self, event):
         if self.data.size == 0 or self.labels.size ==0:
