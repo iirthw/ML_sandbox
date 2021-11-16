@@ -43,6 +43,8 @@ class DataCollect:
         self.data_labels = np.array([])
         self.data = np.array([])
 
+        self.canvas_has_strokes = False
+
         # Constants for data sizes
         self.bytes_in_kb = 1024
         self.bytes_in_mb = 1024 * self.bytes_in_kb
@@ -54,6 +56,8 @@ class DataCollect:
         self.last_x, self.last_y = event.x, event.y
 
     def draw_stroke(self, event):
+        self.canvas_has_strokes = True
+
         top_left_point = (
             self.last_x - self.stroke_size,
             self.last_y - self.stroke_size
@@ -120,6 +124,9 @@ class DataCollect:
 
     def clear_canvas(self, event):
         print('clear_canvas')
+
+        self.canvas_has_strokes = False
+
         # Clear Tk canvas
         self.canvas.delete('all')
         # Clear Pillow image as well 
@@ -172,6 +179,10 @@ class DataCollect:
             return 'Data in use: over 1 GB..'
 
     def append_data(self, event):
+        if not self.canvas_has_strokes:
+            print('[warning] There are not strokes yet.')
+            return
+
         pix = self.get_pixels()
         
         print(self.data.shape)
