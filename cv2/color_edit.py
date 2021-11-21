@@ -1,19 +1,40 @@
 import cv2
-import random
 
-def main():
-    imgReadFlag = 1
-    img = cv2.imread('assets/lenna.png', imgReadFlag)
-    img = cv2.resize(img, (0, 0), fx=1.5, fy=1.5)
+class Editor:
+    top_left_corner = []
+    bottom_right_corner = []
+    windowName = ''
+    imageCached = None
+    image = None
 
-    cv2.imshow('lennaImage', img)
+    def draw_rectangle(self, action, x, y, flags, *userData):
+        if action == cv2.EVENT_LBUTTONDOWN:
+            self.top_left_corner = (x, y)
+        elif action == cv2.EVENT_LBUTTONUP:
+            self.bottom_right_corner = (x, y)
+            color = (0, 255, 0)
+            thickness = 10
+            self.image = self.imageCached.copy()
+            cv2.rectangle(self.image, self.top_left_corner, self.bottom_right_corner, color, thickness)
+            cv2.imshow(self.windowName, self.image)
 
-    print(type(img))
-    print(img.shape)
-    print(img[0])
+    def main(self):
+        imgReadFlag = 1
+        self.image = cv2.imread('assets/lenna.png', imgReadFlag)
+        self.image = cv2.resize(self.image, (0, 0), fx=1.5, fy=1.5)
+        self.imageCached = self.image.copy()
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+        self.windowName = 'image'
+        cv2.imshow(self.windowName, self.image)
+        cv2.setMouseCallback(self.windowName, self.draw_rectangle)
+
+        print(type(self.image))
+        print(self.image.shape)
+        print(self.image[0])
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    main()
+    editor = Editor()
+    editor.main()
