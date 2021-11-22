@@ -18,15 +18,7 @@ class Editor:
             x0 = self.top_left[0]
             y0 = self.top_left[1]
             w = self.bottom_right[0] - self.top_left[0]
-            h = self.bottom_right[1] - self.top_left[1]
-
-            print('top_left == ' + str(self.top_left))
-            print('top_right == ' + str(self.bottom_right))
-            print('x0 == ' + str(x0))
-            print('y0 == ' + str(y0))
-
-            print('w == ' + str(w))
-            print('h == ' + str(h))
+            h = self.bottom_right[1] - self.top_left[1]            
 
             for i in range(w):
                 for j in range(h):                  
@@ -47,8 +39,7 @@ class Editor:
 
     def draw_rectangle(self, action, x, y, flags, *userData):
         if action == cv2.EVENT_LBUTTONDOWN:
-            self.top_left = (x, y)
-            print(x, y)
+            self.top_left = (x, y)            
         elif action == cv2.EVENT_LBUTTONUP:            
             self.bottom_right = (x, y)
 
@@ -78,10 +69,6 @@ class Editor:
         self.window_name = 'image'
         self.show_image()
         cv2.setMouseCallback(self.window_name, self.draw_rectangle)
-
-        print(type(self.image))
-        print(self.image.shape)
-        print(self.image[0])
         
         cv2.createTrackbar(self.color_edit_name, self.window_name, self.color_edit[0], self.color_edit[1], self.on_trackbar)
 
