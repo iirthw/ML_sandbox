@@ -1,4 +1,5 @@
 import cv2
+import math
 
 class Editor:
     top_left = []
@@ -9,6 +10,8 @@ class Editor:
     image = None
     color_edit = [0, 255]
     color_edit_name = 'color_edit'
+    selection_color = (0, 255, 0)
+    selection_thickness = 10
 
     def edit_color(self):
         if self.color_edit[0] > 0:
@@ -26,11 +29,16 @@ class Editor:
             print('h == ' + str(h))
 
             for i in range(w):
-                for j in range(h):                    
-                    self.image[y0 + j, x0 + i] = (0, 255, 0)
+                for j in range(h):                  
+                    pixel = self.image[y0 + j, x0 + i]                    
+                    g = min(math.floor(1.25 * pixel[1]), 255)
+                    b = min(math.floor(1.25 * pixel[2]), 255)
+                    self.image[y0 + j, x0 + i] = (0, g, b)
 
     def on_trackbar(self, val):
         self.color_edit[0] = val
+        self.image = self.image_cached.copy()
+        cv2.rectangle(self.image, self.top_left, self.bottom_right, self.selection_color, self.selection_thickness)
         self.edit_color()
         self.show_image()
 
@@ -55,11 +63,9 @@ class Editor:
             y_top = min(self.top_left[1], self.bottom_right[1])
             self.top_left = (x_left, y_top)
             self.bottom_right = (x_right, y_bottom)
-
-            color = (0, 255, 0)
-            thickness = 10
+            
             self.image = self.image_cached.copy()
-            cv2.rectangle(self.image, self.top_left, self.bottom_right, color, thickness)
+            cv2.rectangle(self.image, self.top_left, self.bottom_right, self.selection_color, self.selection_thickness)
             
             self.show_image()
 
