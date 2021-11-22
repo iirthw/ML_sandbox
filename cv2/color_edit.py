@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 import math
 
 class Editor:
@@ -12,6 +13,9 @@ class Editor:
     color_edit_name = 'color_edit'
     selection_color = (0, 255, 0)
     selection_thickness = 10
+    lower_blue = []
+    upper_blue = []
+    mask = None
 
     def edit_color(self):
         if self.color_edit[0] > 0:
@@ -21,16 +25,33 @@ class Editor:
             h = self.bottom_right[1] - self.top_left[1]            
 
             for i in range(w):
-                for j in range(h):                  
-                    pixel = self.image[y0 + j, x0 + i]                    
-                    g = min(math.floor(1.25 * pixel[1]), 255)
-                    b = min(math.floor(1.25 * pixel[2]), 255)
-                    self.image[y0 + j, x0 + i] = (0, g, b)
+                for j in range(h):
+                    yj = y0 + j
+                    xi = x0 + i             
+                    pixel = self.image[yj, xi]
+                    b = pixel[0]
+                    g = pixel[1]
+                    r = pixel[2]
+
+                    # if b > 1 and r < 255 and g < 255:
+                    hsv = self.hsv[yj, xi]
+                    # print(hsv[0])
+                    # print('[' + str(yj) + ', ' + str(xi) + '] - ' + str(hsv))
+                    if self.mask[yj, xi] > 0:
+                        print(str(b) + ' ' + str(g) + ' ' + str(r))
+                        b = 0
+                        g_temp = max(g, r)
+                        g_temp = math.floor(g / 2) + math.floor(r / 2)                      
+                        r = math.floor(g / 2) + math.floor(r / 2)
+                        g = g_temp
+                        # r = min(math.floor(1.0 * r), 255)
+                        # g = min(math.floor(1.0 * g), 255)                    
+                    self.image[y0 + j, x0 + i] = (b, g, r)
 
     def on_trackbar(self, val):
         self.color_edit[0] = val
         self.image = self.image_cached.copy()
-        cv2.rectangle(self.image, self.top_left, self.bottom_right, self.selection_color, self.selection_thickness)
+        # cv2.rectangle(self.image, self.top_left, self.bottom_right, self.selection_color, self.selection_thickness)
         self.edit_color()
         self.show_image()
 
@@ -62,9 +83,20 @@ class Editor:
 
     def main(self):
         imgReadFlag = 1
-        self.image = cv2.imread('assets/lenna.png', imgReadFlag)
-        self.image = cv2.resize(self.image, (0, 0), fx=1.5, fy=1.5)
+        self.image = cv2.imread('assets/2.jpg', imgReadFlag)
+        self.image = cv2.resize(self.image, (0, 0), fx=0.8, fy=0.8)
         self.image_cached = self.image.copy()
+
+        self.hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
+        # define range of blue color in HSV
+        self.lower_blue = np.array([50,50,50])
+        self.upper_blue = np.array([120,255,255])
+
+         # Threshold the HSV image to get only blue colors
+        self.mask = cv2.inRange(self.hsv, self.lower_blue, self.upper_blue)
+        # Bitwise-AND mask and original image
+        self.image = cv2.bitwise_and(self.image, self.image, mask=self.mask)
+
 
         self.window_name = 'image'
         self.show_image()
